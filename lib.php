@@ -13,8 +13,32 @@ $request = substr($request,0,200);
 $docroot = $_SERVER['DOCUMENT_ROOT'];
 $file_req = $docroot."/dialog/raw_${request}_${timestamp}.txt";
 $file_res = $docroot."/dialog/res_${request}_${timestamp}.txt";
-define('IP_FILE', __DIR__.'/ips_'.date('Ymd').'.txt');
+define('IP_FILE', $docroot.'/cheats/ips_'.date('Ymd').'.txt');
 
+check_user();
+
+
+/*
+class GameHack {}
+$classes = array(
+								"Tribez",
+);
+
+print_r( $_SERVER);
+foreach ($classes as $class) {
+								include($class.".php");
+								$o = new $class;
+								echo $_SERVER['SERVER_NAME']." == ".$o->domain."<br>";
+								if ($_SERVER['SERVER_NAME'] == $o->domain) {
+																$o->hack();
+																exit;
+								}
+
+}
+	*/
+
+
+#include("Tribez.php");
 
 /*
 if (!function_exists('gzdecode')) {
@@ -152,9 +176,23 @@ function get_ip() {
 	return $_SERVER['REMOTE_ADDR'];
 }
 
+function user_is_whitelist($ip) {
+								$whites = array();
+								$whites = array('78.224.146.115', '91.90.100.177', '192.168.0.254', '127.0.0.1');
+								foreach ($whites as $white) {
+																if ($ip == $white) {
+																								return true;
+																}
+								}
+								return false;
+
+}
 function check_user() {
-    $ip = get_ip();
-				if (user_exists($ip)) {
+								$ip = get_ip();
+								if (user_is_whitelist($ip)) {
+								logger("Ok user $ip is whitelisted.");
+        save_user($ip);
+				} else if (user_exists($ip)) {
 							 logger("User $ip already cheated. exiting");
         exit;
     } else {
@@ -164,8 +202,9 @@ function check_user() {
 }
 
 function save_user($user_ip) {
+	logger(IP_FILE);
 	$fh = fopen(IP_FILE, 'a+');
-	$fwrite($fh, $user_ip."\n");
+	fwrite($fh, $user_ip."\n");
 	fclose($fh);
 }
 /*
