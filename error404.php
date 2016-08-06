@@ -1,15 +1,30 @@
-<? 
+<?php
 
-include('lib.php');
-define(DEBUG,1);
+$autoload = $_SERVER['DOCUMENT_ROOT']."/vendor/autoload.php";;
+require_once $autoload;
 
-log_request();
+use Boscot\Env;
+use Boscot\Logger;
+use Boscot\Network;
+use Boscot\User;
 
-logger("playing headers \n");
-$response = play_headers($file_req);
-logger(print_r($response,1));
-append($file_res,$response);
+define(DEBUG, 1);
 
-reply_headers($file_res);
+Env::init();
+
+$request = Network::getRequest();
+Logger::append(FILE_REQ, $request);
+
+$response = Network::playHeaders(FILE_REQ);
+
+Logger::append(FILE_RES, $response);
+
+Network::replyHeaders(FILE_RES);
+/*
+ob_start();
+Network::replyHeaders(FILE_RES);
+$body = ob_get_clean();
+print_r($body);
+*/
 
 

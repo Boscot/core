@@ -1,0 +1,14 @@
+{
+    "name": "boscot/core",
+    "authors": [
+        {
+            "name": "Richard",
+            "email": "richard@boscot.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Boscot\\": "src"
+        }
+    }
+}
